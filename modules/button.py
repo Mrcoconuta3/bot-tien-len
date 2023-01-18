@@ -153,7 +153,7 @@ class Game_Button(discord.ui.View):
         else:  
             if self.num_passes >= len(self.player_list) - 1:
                 print(f'>>>>>>> Bỏ lượt! tất cả lượt đi được reset')
-                self.player_list = {x: True for x in self.dict}
+                self.player_list = {x: True for x in self.player_list}
                 self.prev = []
                 self.num_passes = 0
                 self.prev_turn = None
