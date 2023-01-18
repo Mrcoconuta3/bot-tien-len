@@ -18,8 +18,9 @@ async def setup_hook():
   for filename in os.listdir("./cogs"):
     if filename.endswith(".py"):
       await client.load_extension(f"cogs.{filename[:-3]}")
-      print(f"Load Cog: {filename[:-3]}")   
-
+      print(f"Load Cog: {filename[:-3]}")  
+      
+#Ko dùng đến
 @client.command()
 async def avatar(ctx:commands.Context):
   name = f'image/avatar{ctx.author.id}.png'
@@ -36,7 +37,8 @@ async def avatar(ctx:commands.Context):
   file = discord.File(name, filename=name)
   embed.set_image(url=f"attachment://{name}")
   await ctx.reply(embed =embed, file = file)
-
+  
+#Tạo mask.png (để cắt avatar người chơi thành hình tròn)
 def mask(image,name):
   print(image.size)
   mask_im = Image.new("L", image.size, 0)
