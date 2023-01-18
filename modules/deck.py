@@ -53,6 +53,7 @@ def get_first_turn(card_set):
       return True
   return False
 
+#Ko dùng đến
 def get_first_turn2(card_set):
   """Tìm ra quân nhỏ nhất giữa các người chơi"""
   compare = Card("Spades", 3)
@@ -62,6 +63,7 @@ def get_first_turn2(card_set):
       return True
   return False
 
+#Ko dùng đến
 def low_card(card_set):
     #output the users lowest card
     #2 of hearts is the highest card in the game
@@ -71,34 +73,33 @@ def low_card(card_set):
     return low_card
 
 
-
 #instance of a deck of cards
-class Deck:
+class Deck: # BÀN: TỔNG 52 LÁ TRONG SELF.CARDS
   def __init__(self):
       self.cards = []
       self.build()
       self.shuffle()
 
-  def build(self):
+  def build(self): #tạo ra bộ bài và xáo trộn các lá bài
     for suit in suits:
       for value in range(1, 14):
         self.cards.append(Card(suit, value))
     random.shuffle(self.cards)
 
-  def shuffle(self):
+  def shuffle(self): #Xáo trộn 2
     for i in range(len(self.cards) - 1, 0, -1):
       r = random.randint(0, i)
       self.cards[i], self.cards[r] = self.cards[r], self.cards[i]
 
-  def show(self):
+  def show(self):#hiện tại ko dùng
     deck = [card.pong() for card in self.cards]
     return deck
 
-  def draw_card(self):
+  def draw_card(self):#hiện tại ko dùng
     if self.cards:
       return self.cards.pop()
 
-  def build_hand(self, time=None):
+  def build_hand(self, time=None): #Dùng để lấy bài từ bàn rối xây các tụ, mỗi tụ 13 lá. Tạo list bài cho người chơi. Time: tượng trưng cho số tụ/số người chơi
     decking= self.show()
     tuble = []
     if time: time = int(time)
@@ -117,7 +118,7 @@ class Deck:
     return tuble
     
 
-  def sorting(self, hand):
+  def sorting(self, hand):#Sắp xếp các lá bài thành nhỏ nhất đến lớn nhất
     def myfunc(e):  
         e= e.split()
         value = card_hierarchy[int(e[0])]
@@ -128,7 +129,7 @@ class Deck:
     hand.sort(key=myfunc)
     return hand
   
-  def sorting2(self, hand):
+  def sorting2(self, hand):#Sắp xếp các lá bài thành nhỏ nhất đến lớn nhất, bản cải tiến
     def myfunc(e):  
         e= e.split()
         v = e[0] 
