@@ -1,6 +1,7 @@
 from typing import List
 from modules.deck import *
 
+#So sánh giữa các lá bài đơn -> trả về lá bài nhỏ hơn
 def compare_card_single(a, b):
   a_card_order = card_hierarchy[a.value]
   b_card_order = card_hierarchy[b.value]
@@ -17,7 +18,7 @@ def compare_card_single(a, b):
     return a
 
 
-def sảnh(card_values):
+def sảnh(card_values): #Kiểm tra danh sách bài có phải là sảnh không
     if sorted(card_values) == list(range(min(card_values), max(card_values)+1)):
         return 'sảnh'
     return 'Invalid'
@@ -26,7 +27,7 @@ def sảnh(card_values):
 def compare_value(cards , prev_cards):
     if prev_cards== []:
       return True
-    highest_card = cards[len(cards) - 1]
+    highest_card = cards[len(cards) - 1] #array bắt đầu từ 0 nên phải trừ 1
     rank = card_hierarchy[highest_card.value] + (suit_hierarchy[highest_card.suit] /10)
     hprev_card = prev_cards[len(prev_cards) - 1]
     rank2 = card_hierarchy[hprev_card.value] + (suit_hierarchy[hprev_card.suit] /10)
@@ -34,6 +35,7 @@ def compare_value(cards , prev_cards):
         return True
     return False
 
+#So sánh sảnh trả về Boolean --> Lấy lá bài cao nhất của mỗi bên rồi so sánh giống như compare_card_single
 def compare_run(cards , prev_cards):
     if prev_cards== []:
       return True
@@ -51,7 +53,7 @@ class Player:
     def __init__(self, hand:List=None):
         self.hand = hand
 
-    def remove_cards(self, cards):
+    def remove_cards(self, cards): #Gỡ các lá bài ra khỏi tụ của người chơi
         for card in cards:
           self.hand.remove(card)
         #Gán newhand cho user
@@ -68,7 +70,7 @@ class Player:
     def is_valid_move(self, prev_move, prev_style):
       card_values = [card.value for card in self.hand]
       try: #Fix potential bug (may be ... Who know)
-        if 1 in card_values:
+        if 1 in card_values:# A giá trị 1 đối thành 14 
           for x in range(len(card_values) + 1):
              try:
                 one_index = card_values.index(1)
@@ -83,7 +85,7 @@ class Player:
           moves = sảnh(card_values)
           if moves == 'sảnh':
             if prev_move == [] or compare_run(self.hand, prev_move):
-              if 2 not in card_values:
+              if 2 not in card_values: #Sảnh ko được có heo
                 move = 'sảnh'
 
       if len(self.hand) == 1: 
@@ -113,7 +115,7 @@ class Player:
         if sorted(card_values) == list(self.hand[0].value for i in range(4)):
             if prev_move == [] or compare_value(self.hand, prev_move):
               move= 'tứ quý' 
-            elif prev_style in ['1heo','2heo','ba đôi thông']:
+            elif prev_style in ['1heo','2heo','ba đôi thông']: #Nước đi trước đó phải là nước đi có thể bị chặt
               move = 'tứ quý'
 
               
@@ -134,7 +136,7 @@ class Player:
               move = 'bốn đôi thông'     
       return move
           
-    #Thay đổi người chơi bản cũ
+    #Thay đổi người chơi bản cũ, Ko dùng nữa
     def change_player(self, dicting:dict , player_turn):
       player_list = [user[0] for user in dicting.items() if len(user[1]) > 0] 
       print(player_list)
@@ -146,7 +148,7 @@ class Player:
         player_turn = player_list[index+1]
       return player_turn
 
-    def change_player1(self, player_list:dict, player_turn):
+    def change_player1(self, player_list:dict, player_turn): #ĐỆ QUY 
       """Thay đổi lượt người chơi""" #Thay đổi cách hoạt động playerlist thành dict {123 : True hoặc False,...}
       index = list(player_list.keys()).index(player_turn)
       if index == len(player_list) - 1:
