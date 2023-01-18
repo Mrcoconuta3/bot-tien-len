@@ -8,9 +8,10 @@ import discord
     
 def output1(name , dict) -> None:
     """Generate upside down card with length and stick it to background -> Display.png"""
-    create_table_card(dict).save(f'{name}')
+    create_table_card(dict).save(f'{name}') #LƯU HÌNH ÀNH VỚI TÊN= name để dễ dàng trích xuất và gửi lên kênh
     
 def create_table_card(dict:dict) -> Image.Image:#  dict = {102: [], 103 : [card,...]}
+    """Tạo hình ảnh bàn chơi với bài và avatar người chơi """
     background : Image.Image= Image.open(os.path.join('modules/', 'board.png'))
     avatars_id = [id for id in dict]
 
@@ -62,11 +63,11 @@ def hand_to_image(hand: List[Card]) -> List[Image.Image]:
 
 def output(name, namebg, *hands: Tuple[List[Card]]) -> None:
     print(f'{hands} --- hands in output')
-    center(namebg , *map(hand_to_image, hands)).save(f'{name}')
+    center(namebg , *map(hand_to_image, hands)).save(f'{name}')# MAP giống như nhân phương thức, có bao nhiêu bộ bài thì có bấy nhiêu phương thức (mà thôi bỏ qua đi)
 
 @staticmethod
 def center(namebg, *hands: Tuple[Image.Image]) -> Image.Image:
-    #print(hands)modules/table.png'
+    """Đưa các lá bài đã đi ra giữa bàn cho người dùng dễ xem"""
     background : Image.Image= Image.open(os.path.join(namebg))
     #X pixel cột ngang, Y pixel cột dọc
     try:
@@ -80,7 +81,6 @@ def center(namebg, *hands: Tuple[Image.Image]) -> Image.Image:
             #Theo cột ngang (+20 pixel cho mỗi lá bài được đánh ra)
             start_x = bg_center_x - ((img_dai + ((len(hand) - 1) *20)) //2)
             for card in hand:
-                #print('Card: '.format(card))
                 background.alpha_composite(card, (start_x, start_y))
                 start_x += 20
     except:
@@ -88,7 +88,7 @@ def center(namebg, *hands: Tuple[Image.Image]) -> Image.Image:
     return background
 
 async def out_table_user(id, hand, **kwargs):
-    #name = f'game/{id}.png'
+    """Dùng đế cho từng người chơi xem bài (riêng tư)"""
     output(f'game/{id}.png', 'modules/table.png', hand)
     embed = make_embed(**kwargs)
     file = discord.File(
@@ -104,9 +104,6 @@ async def out_table1(ctx, dictonary, game , player_turn, prev_turn, prev_move, f
         view = button.Game_Button(ctx, game, dictonary, player_turn, prev_turn, prev_move, first_turn= first_turn, player_list = player_list, num_passes=num_passes, just_end =just_end)
         display_name = f'game/Display{game}.png'
         output1(display_name, dictonary)
-        #if first_turn:
-        #    output1(display_name, dictonary)
-            #ghost(display_name, dictonary ,len(dictonary))
         if not first_turn:
             if prev_move != []:
                 display_name = f'game/Display0{game}.png'
@@ -140,10 +137,6 @@ async def out_table_last(ctx, dictonary, game , prev_move, content , **kwargs) -
             os.remove(f'game/{userid}.png')
             os.remove(f'avatar/{userid}.png')
         except: continue  
-    #for userid in dictonary:   
-    #    try:
-    #        re_mongoose(userid)
-    #    except Exception as e: print(f'ERROR in remove userid from mongodb: {e}')
     return message
 
 #def getflipcard():
