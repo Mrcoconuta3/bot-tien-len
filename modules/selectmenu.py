@@ -33,8 +33,7 @@ class selectmenu(Select):
 
     async def callback(self, interaction):
         #card_move = self.values #-> Danh sách các lá bài được đi
-        #await interaction.response.defer()
-        temp_turn = interaction.user.id
+        temp_turn = interaction.user.id 
         if 'Bỏ lượt' in self.values:
             if self.first_turn:
                 await interaction.response.send_message("Người chơi đầu tiên không được bỏ lượt", ephemeral= True, delete_after= 10)
@@ -60,15 +59,12 @@ class selectmenu(Select):
                         self.prev_move = []
                         self.num_passes = 0
                         self.style = None
-                        
+                            
+                #self.justend biến thành false khi đã đủ người chơi bỏ lượt hoặc có người chơi đi thay vì bỏ lượt- >self.just_end = False
                 
-                #self.justend biến thành false khi đã đủ 1 vòng index[max] - >self.just_end = False
-                    #else: self.player_list[interaction.user.id] = False
-
                 await interaction.response.edit_message(content=f"Bạn chọn bỏ lượt", view=None)
                 await disable_button(self.button)
                 await self.ctx.send(f"<@{interaction.user.id}> chọn bỏ lượt")
-                #await interaction.followup.delete_message(interaction.message.id)
                 await out_table1(self.ctx, 
                                 self.dict, 
                                 game = self.game, 
@@ -86,8 +82,7 @@ class selectmenu(Select):
         else:
             
             card_move = Deck().sorting2(self.values)
-            print(card_move)
-            #print(card_move) #List['3 Bích', '4 Bích', 5 Bích'] Sảnh
+            print(card_move) #List['3 Bích', '4 Bích', 5 Bích'] Sảnh
             #Lấy dạng bài được đi -> so sánh với dạng bài trước : trả về giá trị dạng bài hiện tại nếu nước đi hợp lệ . Còn không thì trả về giá trị Invalid
             valid = True
             if self.first_turn: #Kiểm tra người dùng có 3 bích không
@@ -132,8 +127,8 @@ class selectmenu(Select):
                                 self.num_passes = 0
                                 self.style = None
                         except:pass
-                        #Người chơi đã về
-                        try:
+                        
+                        try:#Người chơi đã về đích
                             if len(new_hand) == 0:
                                 #del self.player_list[interaction.user.id]
                                 print(f'<@{interaction.user.id}> về đích!')
@@ -149,12 +144,8 @@ class selectmenu(Select):
                             await out_table_last(self.ctx, self.dict, game = self.game, prev_move=hands,
                                     content= f'Trò chơi kết thúc',
                                     title=f"Bàn: {self.game}",)
-                            
-                            #try:
-                            #except:await interaction.followup.send(f"Trò chơi kết thúc!")
-                            #await interaction.followup.delete_message(interaction.message.id)
+
                         else:#Chuyển lượt 
-                            #self.player_turn = Player().change_player1(self.player_list, interaction.user.id)
                             # Xuất ra ảnh rồi gửi lên channel  
                             #prev_move= hands 
                             await interaction.response.edit_message(content =f"Nước đi của bạn: {style.capitalize()}\n", view=None)
@@ -166,14 +157,7 @@ class selectmenu(Select):
                                     content= f'Lượt của <@{self.player_turn}>',
                                     title=f"Bàn: {self.game}",
                                     description=f"Số người chơi: {len(self.dict)}")
-                        # Xoá menu này
-                            #try:
                             
-                            #except:
-                            #    await interaction.followup.edit_message(interaction.message.id, content =f"Nước đi của bạn: {style.capitalize()}\n", view=None)
-                            #await interaction.followup.delete_message(interaction.message.id)
-                            
-
             if not valid: #Nước đi không hợp lệ
                 #Print this and do nothing
                 print('Your move is invalid')
@@ -189,13 +173,10 @@ class MenuView(discord.ui.View):
     
     async def on_timeout(self):
         pass
-
-    #async def select_callback(self, select, interaction):
-
+    
 
 def getselector(ctx , game, dict, cards_hand, first_turn , player_list, num_passes, just_end, prev_turn, prev_move=[] ,button =None):
-    #Các nước đi bắt buộc tiếp theo
-    #print(len(cards_hand))
+    #Các nước đi bắt buộc tiếp theo)
     min_values = 1 ; max_values = len(cards_hand)
     #min_values, max_values = min_max(prev_turn, cards_hand, prev_move)
     option = [discord.SelectOption(label='Bỏ lượt', emoji='❌')]
@@ -216,13 +197,13 @@ def getselector(ctx , game, dict, cards_hand, first_turn , player_list, num_pass
 #  4 đôi thông                   4 đôi thông
 #   Tứ quý                     tứ quý, 4 đôi thông
 
-def min_max(prev_turn, cards_hand, prev_move):
+def min_max(prev_turn, cards_hand, prev_move): #Ko dùng nữa
     if prev_turn is None or prev_move == [] : min_values = 1; max_values = len(cards_hand)
     elif prev_turn == 'sảnh' : min_values = max_values = len(prev_move)
     else: value = valid_turn[prev_turn] ; min_values = value[0]; max_values = value[1] 
     return min_values, max_values
 
-valid_turn = { #[min, max]
+valid_turn = { #[min, max] #Ko dùng nữa
     'đơn' : [1, 1],
     'đôi' : [2, 2],
     '1heo': [1, 8],
@@ -247,7 +228,7 @@ next_turn = {
     'bốn đôi thông' : ('bốn đôi thông')
     }
 
-async def disable_button(button) -> None:
+async def disable_button(button) -> None: #Bỏ nút khi có người chơi đi bài
     #try:
         button.stop()
         await button.message.edit(view = None)
