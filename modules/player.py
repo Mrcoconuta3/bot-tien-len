@@ -67,13 +67,15 @@ class Player:
     #Kiểm tra nước đi có hợp lệ -> move_style
     def is_valid_move(self, prev_move, prev_style):
       card_values = [card.value for card in self.hand]
-      if 1 in card_values:
-        for x in range(len(card_values) + 1):
-            try:
+      try: #Fix potential bug (may be ... Who know)
+        if 1 in card_values:
+          for x in range(len(card_values) + 1):
+             try:
                 one_index = card_values.index(1)
                 card_values[one_index] = 14
-            except:
+             except:
                 pass
+      except:pass
       print('SELF.hand:{} \nSELF.prev_move{}'.format(self.hand, prev_move))
       #print(f'SORTED CARD VALUES: {sorted(card_values)}')
       move = 'Invalid'
