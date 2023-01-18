@@ -22,6 +22,7 @@ class Button(discord.ui.View):
         self.game = game_number
 
     def add_item_dict(self, item):
+        """Thêm người chơi vào danh sách"""
         self.dict[item] = []
         get_index = list(self.dict.keys()).index(item)
         return get_index
@@ -49,7 +50,7 @@ class Button(discord.ui.View):
     @discord.ui.button(label="Tham gia trò chơi", style=discord.ButtonStyle.green)
     async def ENTERGAME(self, interaction: discord.Interaction, button: discord.ui.Button):
         index = self.add_item_dict(interaction.user.id)
-        await interaction.user.display_avatar.save(f'avatar/{interaction.user.id}.png')
+        await interaction.user.display_avatar.save(f'avatar/{interaction.user.id}.png') #Lưu avatar người chơi để tạo bàn
         await interaction.response.send_message("Bạn vừa tham gia với tư cách người chơi số {}".format(index+1), ephemeral= True)
         if len(self.dict) == 4:
             self.stop()
@@ -61,14 +62,13 @@ class Button(discord.ui.View):
         except:
             pass
         if len(self.dict) < 2:
-            #re_mongoose(self.ctx.author.id)
             await self.ctx.send("Số lượng người chơi ko đủ. Terminating the game")
             return False
         else:#Run the game
             #dict = {'id' : ["card"], 'id2': ["card2"]}
             #chia bài cho ng chơi -> Dict hoàn chỉnh
-            Cards = Deck().build_hand(len(self.dict))# _> Card list of the hand
-            for user in self.dict.keys():
+            Cards = Deck().build_hand(len(self.dict))# _> Card list of the hand. 
+            for user in self.dict.keys(): #Lấy bài từ deck rồi đưa lần lượt cho người chơi
                 index = list(self.dict).index(user)
                 try:
                     self.dict[user] = Cards[index]
@@ -90,9 +90,9 @@ class Game_Button(discord.ui.View):
         self.prev = prev_move
         self.first = first_turn
         self.num_passes = num_passes
-        self.running = False
+        self.running = False #True khi người chơi ấn vào nút đi bài. Ngăn cho việc người chơi đi được nhiều lần trong 1 turn
         self.player_list = player_list
-        self.just_end = just_end
+        self.just_end = just_end #True khi có ai đó vừa về đích trong vòng này
 
     async def interaction_check(self, interaction):
         if interaction.user.id not in self.dict:
@@ -164,7 +164,7 @@ class Game_Button(discord.ui.View):
                     title=f"Bàn: {self.game}",
                     description=f"Số người chơi: {len(self.dict)}")
         
-    
+#Class này dùng trong nút bỏ bài, hiện tại ko xài bỏ cũng ko sao    
 class xacnhan(discord.ui.View):
     def __init__(self, dict):
         super().__init__(timeout=10)
