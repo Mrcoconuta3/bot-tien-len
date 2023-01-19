@@ -45,13 +45,18 @@ class selectmenu(Select):
                 self.player_list[interaction.user.id] = False
                 if self.just_end: #Patch 2 
                     print('Some one just finished their hand: *** True ***')
-                    if self.num_passes >= len(self.player_list) or self.player_turn == temp_turn:
+                    if self.num_passes >= len(self.player_list):
                         print(f'>>>>>>> Bỏ lượt! tất cả lượt đi được reset')
                         self.player_list = {x: True for x in self.player_list}
                         self.prev_move = []
                         self.num_passes = 0
                         self.style = None
                         self.just_end = False
+                    if self.player_turn == temp_turn:
+                        #Bug sau khi tất cả đều bỏ lượt khi có 1 người chơi về. Vd: đang lượt đi người thứ 2. Ta có dict_player_list = {1: False, 2: True}
+                        #sẽ chuyển lượt cho người thứ 2 thay vì quay về người ban đầu
+                        #Để fix lỗi này ta cần chuyển 1 lần nữa 
+                        self.player_turn= Player().change_player1(self.player_list, interaction.user.id)
                 else:      
                     if self.num_passes >= len(self.player_list) - 1 or self.player_turn == temp_turn:
                         print(f'>>>>>>> Bỏ lượt! tất cả lượt đi được reset')
